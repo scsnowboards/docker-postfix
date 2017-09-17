@@ -2,10 +2,7 @@ docker_tag 	= scsnowboards/docker-postfix
 version = 1.0.0
 
 build:
-	docker build -t $(docker_tag):latest .
-
-deploy:
-	./docker-builder.sh $(version)
+	docker build -t $(docker_tag) .
 
 bash:
 	docker run --rm -it -e MAILNAME=mail.example.com $(docker_tag) bash

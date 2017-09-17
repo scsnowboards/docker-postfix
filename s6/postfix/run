@@ -15,6 +15,7 @@ fi
 # Defaults
 : ${SIZELIMIT:='15728640'}  # 10Meg with headroom
 : ${RELAYHOST:=""} # empty
+: ${CANONICAL_CLASSES:="envelope_sender"}
 
 # DKIM
 if [ "${USE_DKIM}" == "yes" ]; then
@@ -75,10 +76,19 @@ echo "postfix >> Setting inet_protocols to $INET_PROTOCOLS"
 postconf -e inet_protocols="$INET_PROTOCOLS"
 
 if [ -n "${BOUNCE_ADDRESS}" ]; then
-  echo "postfix >> Setting bounce address to $BOUNCE_ADDRESS"
-  postconf -e notify_classes="bounce"
-  postconf -e bounce_notice_recipient="$BOUNCE_ADDRESS"
+    echo "postfix >> Setting bounce address to $BOUNCE_ADDRESS"
+    postconf -e notify_classes="bounce"
+    postconf -e bounce_notice_recipient="$BOUNCE_ADDRESS"
 fi
+
+if [ -n "${REWRITE_MAIL_FROM}" ]; then
+    echo "postfix >> Adding email rewrite from $REWRITE_MAIL_FROM to ${MAIL_FROM}"
+    echo "$REWRITE_MAIL_FROM   ${MAIL_FROM}" > canonical
+    postconf -e canonical_maps="hash:/etc/postfix/canonical"
+    postconf -e canonical_classes="$CANONICAL_CLASSES"
+fi
+# canonical_maps = hash:/etc/postfix/canonical
+# canonical_classes = envelope_sender
 
 # exit cleanly
 trap "{ /usr/sbin/service postfix stop; }" EXIT

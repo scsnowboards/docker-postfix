@@ -1,7 +1,7 @@
 # Postfix SMTP Relay
 
-FROM debian:jessie
-MAINTAINER Andrew Cutler <andrew@panubo.io>
+FROM debian:stretch
+MAINTAINER DJ Schleen <scsnowboards@gmail.com>
 
 ENV S6_RELEASE=1.20.0 S6_VERSION=2.5.1.0 S6_SHA1=b798972cbf46e28f1c5d238f6703aba6edded57e
 
